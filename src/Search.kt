@@ -1,11 +1,13 @@
 fun main() {
 
     val randomList = generateList(quantity = 99, maxValue = 200)
+    val orderedList = quicksort(randomList)
 
-    val positionsSequencial = sequencialSearch(searchValue = 15, intList = randomList)
-    val positionsBinary = binarySearch(searchValue = 15, intList = quicksort(randomList))
+    val positionsSequencial = sequencialSearch(searchValue = 15, intList = orderedList)
+    val positionsBinary = binarySearch(searchValue = 15, intList = orderedList)
 
-    println(randomList)
+    println("Lista aleatória: $randomList")
+    println("Lista ordenada: $orderedList")
     println("indices encontrados [Sequencial]: $positionsSequencial")
     println("indices encontrados [Binária]: $positionsBinary")
 
@@ -30,22 +32,26 @@ fun sequencialSearch(searchValue: Int, intList: List<Int>): List<Int> {
 }
 
 
-fun binarySearch(intList: List<Int>, searchValue: Int): Int {
+private fun binarySearch(searchValue: Int, intList: List<Int>): List<Int> {
+
+    val positionList = mutableListOf<Int>()
 
     var low = 0
     var high = intList.size - 1
     var mid: Int
+
     while (low <= high) {
-        mid = low + ((high - low) / 2)
-        when {
-            searchValue > intList[mid] -> low =
-                mid + 1    // element is greater than middle element of array, so it will be in right half of array
-            searchValue == intList[mid] -> return mid // found the element
-            searchValue < intList[mid] -> high =
-                mid - 1   //element is less than middle element of array, so it will be in left half of the array.
+        mid = (low + high) / 2
+        if (searchValue < intList[mid]) {
+            high = mid - 1
+        } else if (searchValue >= intList[mid]) {
+            low = mid + 1
+        } else {
+            positionList.add(intList[mid])
+            high = mid - 1
         }
     }
-    return -1
+    return positionList
 }
 
 fun quicksort(items: List<Int>): List<Int> {
@@ -71,7 +77,7 @@ fun generateList(quantity: Int, maxValue: Int): List<Int> {
 
     val list = mutableListOf<Int>()
 
-    for (number in 0 .. quantity) {
+    for (number in 0..quantity) {
         val randomNumber = (0..maxValue).random()
         list.add(randomNumber)
 
